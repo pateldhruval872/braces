@@ -21,6 +21,15 @@ const equal = (input, expected = bash(input), options) => {
 };
 
 describe('unit tests from brace-expand', () => {
+  describe('errors', () => {
+    it('should reject deeply nested ASTs', () => {
+      let ast = { type: 'text', value: 'a' };
+      for (let i = 0; i < 101; i++) ast = { type: 'brace', nodes: [ast] };
+      ast = { type: 'root', nodes: [ast] };
+      assert.throws(() => expand(ast), /exceeds max depth/);
+    });
+  });
+
   describe('extglobs', () => {
     it('should split on commas when braces are inside extglobs', () => {
       equal('*(a|{b|c,d})', ['*(a|b|c)', '*(a|d)']);

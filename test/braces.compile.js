@@ -10,6 +10,13 @@ describe('braces.compile()', () => {
     it('should throw an error when invalid args are passed', () => {
       assert.throws(() => compile());
     });
+
+    it('should reject deeply nested ASTs', () => {
+      let ast = { type: 'text', value: 'a' };
+      for (let i = 0; i < 101; i++) ast = { type: 'brace', nodes: [ast] };
+      ast = { type: 'root', nodes: [ast] };
+      assert.throws(() => compile(ast), /exceeds max depth/);
+    });
   });
 
   describe('invalid characters', () => {
