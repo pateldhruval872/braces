@@ -23,6 +23,13 @@ describe('braces.parse()', () => {
       assert.throws(() => parse('{{a,b},c}', { maxDepth: 1 }), /exceeds max depth/);
       assert.doesNotThrow(() => parse('{{a,b},c}', { maxDepth: 2 }));
     });
+
+    it('should enforce fractional maximum depth values', () => {
+      assert.doesNotThrow(() => parse('{a,b}', { maxDepth: 1.5 }));
+      assert.throws(() => parse('{{a,b},c}', { maxDepth: 1.5 }), /exceeds max depth/);
+      assert.doesNotThrow(() => parse('(a)', { maxDepth: 1.5 }));
+      assert.throws(() => parse('((a))', { maxDepth: 1.5 }), /exceeds max depth/);
+    });
   });
 
   describe('valid', () => {
